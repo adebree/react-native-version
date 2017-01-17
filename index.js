@@ -108,7 +108,7 @@ if (!targets.length || targets.indexOf('ios') > -1) {
 			plist.writeFileSync(program.ios, iosFile);
 
 			if (process.platform === 'darwin') {
-				child.execSync('plutil -convert xml1 ' + program.ios);
+				child.execSync('plutil -convert xml1 "' + program.ios + '"');
 			}
 
 			amend();
