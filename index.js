@@ -30,6 +30,7 @@ program
 .option('-i, --ios [path]', 'Path to your "Info.plist" file', path.join(cwd, 'ios', appPkg.name, 'Info.plist'))
 .option('-t, --target <platforms>', 'Only version specified platforms, eg. "--target android,ios"', list)
 .option('-T, --trim-package-version', 'Trim the package version to only be <major>.<minor> when setting the version on the mobile apps (leave out the patch version)')
+.option('-s, --sync-build-version-with [path]', '(iOS only) Provide a Info.plist file to sync the CFBundleVersion with')
 /* eslint-enable max-len */
 .parse(process.argv);
 
@@ -101,7 +102,12 @@ if (!targets.length || targets.indexOf('ios') > -1) {
 
 			iosFile.CFBundleShortVersionString = pkgVersion;
 
-			if (program.incrementBuild) {
+			if (program.syncBuildVersionWith) {
+				const iosFileSource = plist.readFileSync(program.syncBuildVersionWith);
+
+				iosFile.CFBundleVersion = iosFileSource.CFBundleVersion;
+
+			} else if (program.incrementBuild) {
 				iosFile.CFBundleVersion = String(parseInt(iosFile.CFBundleVersion, 10) + 1);
 			}
 
